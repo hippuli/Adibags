@@ -17,7 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with AdiBags.  If not, see <http://www.gnu.org/licenses/>.
 
-## Interface: 100002
+## Interface: 30400
 
 ## Title: AdiBags
 ## Notes: Adirelle's bag addon.
@@ -56,10 +56,6 @@ core\Layout.lua
 core\OO.lua
 
 widgets\LayeredRegion.lua
-widgets\grid\Dropzone.lua
-widgets\grid\Cell.lua
-widgets\grid\Column.lua
-widgets\grid\Grid.lua
 widgets\ContainerFrame.lua
 widgets\BagSlots.lua
 widgets\ItemButton.lua
