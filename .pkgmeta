@@ -1,5 +1,5 @@
-package-as: Adibags
+package-as: AdiBags
 
 move-folders:
- Adibags/Adibags: Adibags
- Adibags/Adibags_Config: Adibags_Config
+ AdiBags/AdiBags: AdiBags
+ AdiBags/AdiBags_Config: AdiBags_Config
