@@ -1,0 +1,5 @@
+package-as: Adibags
+
+move-folders:
+ Adibags/Adibags: Adibags
+ Adibags/Adibags_Config: Adibags_Config

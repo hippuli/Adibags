@@ -1,0 +1,10 @@
+lightweight tag 1e7c75b966e69cd4d19cbe4d279dbf1fe7b03ba9 v1.9.52
+Author:	Antonio Lobato <aj.lobato@gmail.com>
+Date:	Wed Jan 4 20:16:50 2023 -0800
+
+commit 1e7c75b966e69cd4d19cbe4d279dbf1fe7b03ba9
+Author: Antonio Lobato <aj.lobato@gmail.com>
+Date:   Wed Jan 4 20:16:50 2023 -0800
+
+    Fixed lua error spam.
+
