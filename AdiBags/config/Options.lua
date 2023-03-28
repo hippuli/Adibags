@@ -316,9 +316,9 @@ local function GetOptions()
 		end
 	end
 	options = {
-		--[===[@debug@
+		--@debug@
 		name = addonName..' DEV',
-		--@end-debug@]===]
+		--@end-debug@
 		--@non-debug@
 		name = addonName..' v1.10.7',
 		--@end-non-debug@
