@@ -130,6 +130,8 @@ function sectionProto:OnAcquire(container, name, category)
 	self.key = BuildSectionKey(name, category)
 	self:SetSizeInSlots(0, 0)
 	self.count = 0
+	self.total = 0
+	self.height = 0
 	self.container = container
 	self:RegisterMessage('AdiBags_OrderChanged', 'FullLayout')
 	self.Header:SetNormalFontObject(addon.fonts[string.lower(container.name)].sectionFont)
@@ -144,6 +146,8 @@ function sectionProto:OnRelease()
 	self.name = nil
 	self.category = nil
 	self.container = nil
+	self.total = 0
+	self.height = 0
 end
 
 function sectionProto:UpdateFont()
@@ -370,6 +374,10 @@ function sectionProto:FullLayout()
 		return
 	elseif self:IsCollapsed() then
 		return self:Hide()
+	end
+
+	if self.total < 0 or self.count < 0 then
+		return
 	end
 
 	for button in pairs(self.buttons) do
