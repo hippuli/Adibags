@@ -19,7 +19,10 @@ You should have received a copy of the GNU General Public License
 along with AdiBags.  If not, see <http://www.gnu.org/licenses/>.
 --]]
 
-local addonName, addon = ...
+local addonName = ...
+---@class AdiBags: ABEvent-1.0
+local addon = LibStub('AceAddon-3.0'):GetAddon(addonName)
+---@cast addon +ABEvent-1.0|ABBucket-1.0|AceHook-3.0|AceConsole-3.0
 local L = addon.L
 
 --<GLOBALS
@@ -42,30 +45,13 @@ local print = _G.print
 local strmatch = _G.strmatch
 local strsplit = _G.strsplit
 local type = _G.type
+---@diagnostic disable-next-line: deprecated
 local unpack = _G.unpack
 --GLOBALS>
 
-LibStub('AceAddon-3.0'):NewAddon(addon, addonName, 'ABEvent-1.0', 'ABBucket-1.0', 'AceHook-3.0', 'AceConsole-3.0')
---@debug@
-_G[addonName] = addon
---@end-debug@
-
 --------------------------------------------------------------------------------
--- Debug stuff
+-- Addon initialization and enabling
 --------------------------------------------------------------------------------
-
---[===[@alpha@
----@type AdiDebug
-AdiDebug = AdiDebug
-
-if AdiDebug then
-	AdiDebug:Embed(addon, addonName)
-else
---@end-alpha@]===]
-	function addon.Debug() end
---[===[@alpha@
-end
---@end-alpha@]===]
 
 --@debug@
 local function DebugTable(t, prevKey)
@@ -75,12 +61,6 @@ local function DebugTable(t, prevKey)
 	end
 end
 --@end-debug@
-
---------------------------------------------------------------------------------
--- Addon initialization and enabling
---------------------------------------------------------------------------------
-
-addon:SetDefaultModuleState(false)
 
 local bagKeys = {"backpack", "bank", "reagentBank"}
 function addon:OnInitialize()
@@ -93,13 +73,14 @@ function addon:OnInitialize()
 	end
 
 	self.db = LibStub('AceDB-3.0'):New(addonName.."DB", self.DEFAULT_SETTINGS, true)
-	self.db.RegisterCallback(self, "OnProfileChanged")
+	self.db.RegisterCallback(self, "OnProfileChanged", "OnProfileChanged")
 	self.db.RegisterCallback(self, "OnProfileCopied", "OnProfileChanged")
 	self.db.RegisterCallback(self, "OnProfileReset", "Reconfigure")
 
 	self:UpgradeProfile()
 
 	-- Create the bag font objects.
+	---@type table<string, table<string, AdiFont|Font>>
 	self.fonts = {}
 	for _, name in ipairs(bagKeys) do
 		self.fonts[name] = {
@@ -122,13 +103,6 @@ function addon:OnInitialize()
 	self:RegisterChatCommand("adibags", function(cmd)
 		addon:OpenOptions(strsplit(' ', cmd or ""))
 	end, true)
-
-	-- Just a warning
-	--[===[@alpha@
-	if geterrorhandler() == _G._ERRORMESSAGE and not GetCVarBool("scriptErrors") then
-		print('|cffffee00', L["Warning: You are using an alpha or beta version of AdiBags without displaying Lua errors. If anything goes wrong, AdiBags (or any other addon causing some error) will simply stop working for apparently no reason. Please either enable the display of Lua errors or install an error handler addon like BugSack or Swatter."], '|r')
-	end
-	--@end-alpha@]===]
 
 	if addon.isRetail then
 		-- Disable the reagent bag tutorial
@@ -186,6 +160,7 @@ function addon:OnEnable()
 	self:SetSortingOrder(self.db.profile.sortingOrder)
 
 	for name, module in self:IterateModules() do
+		---@cast module +AceModule|FilterModule
 		if module.isFilter then
 			module:SetEnabledState(self.db.profile.filters[module.moduleName])
 		elseif module.isBag then
@@ -354,19 +329,6 @@ do
 end
 
 --------------------------------------------------------------------------------
--- Module prototype
---------------------------------------------------------------------------------
-
-local moduleProto = {
-	Debug = addon.Debug,
-	OpenOptions = function(self)
-		return addon:OpenOptions("modules", self.moduleName)
-	end,
-}
-addon.moduleProto = moduleProto
-addon:SetDefaultModulePrototype(moduleProto)
-
---------------------------------------------------------------------------------
 -- Event handlers
 --------------------------------------------------------------------------------
 
@@ -438,8 +400,6 @@ function addon:ConfigChanged(vars)
 				end
 			elseif strmatch(name, 'columnWidth') then
 				return self:SendMessage('AdiBags_LayoutChanged')
-			elseif strmatch(name, '^theme%.font') then
-				return self:UpdateFonts()
 			end
 		end
 	end
